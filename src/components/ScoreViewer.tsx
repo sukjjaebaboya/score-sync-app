@@ -13,11 +13,101 @@ const PAGE_TURN_SCROLL_MS = 680;
 const ANCHOR_TOGGLE_RADIUS_PX = 28;
 const SCORE_SIDE_GUTTER_PX = 36;
 
+type HelpLanguage = "ko" | "en" | "ja";
+
+const HELP_CONTENT: Record<
+  HelpLanguage,
+  {
+    language: string;
+    title: string;
+    subtitle: string;
+    steps: Array<{ title: string; description: string }>;
+    rightsTitle: string;
+    rightsNotice: string;
+    privacyNotice: string;
+    pdfButton: string;
+  }
+> = {
+  ko: {
+    language: "한국어",
+    title: "영상과 악보를 맞춰 연습해 보세요",
+    subtitle: "세 단계만 거치면 나만의 악보 싱크를 만들 수 있습니다.",
+    steps: [
+      {
+        title: "유튜브 영상과 악보 준비",
+        description: "위에서 YouTube 영상을 불러오고, 아래 버튼으로 연습할 악보 PDF를 선택하세요.",
+      },
+      {
+        title: "악보 끝을 눌러 타이밍 기록",
+        description: "영상의 해당 타이밍에 맞춰 악보 줄 오른쪽 끝을 누르세요. 체크포인트를 다시 누르면 삭제됩니다.",
+      },
+      {
+        title: "JSON으로 저장하고 이어서 연습",
+        description: "설정에서 JSON을 저장하세요. 다음에 같은 영상과 PDF를 열고 JSON을 불러오면 그대로 이어집니다.",
+      },
+    ],
+    rightsTitle: "사용 전 꼭 확인하세요",
+    rightsNotice:
+      "본인이 소유했거나 이용 허락을 받은 YouTube 영상과 악보 PDF만 사용하세요. 저작권과 이용 권한을 확인할 책임은 사용자에게 있으며, 무단 사용으로 발생한 분쟁이나 손해에 대해 서비스 운영자는 관련 법령이 허용하는 범위에서 책임을 지지 않습니다.",
+    privacyNotice: "PDF와 연습 기록은 서버로 전송되지 않고 현재 브라우저 안에서 처리됩니다.",
+    pdfButton: "악보 PDF 선택",
+  },
+  en: {
+    language: "English",
+    title: "Practice with your video and score in sync",
+    subtitle: "Create your own score timing in just three steps.",
+    steps: [
+      {
+        title: "Load a YouTube video and score",
+        description: "Load a YouTube video above, then choose the score PDF you want to practice with.",
+      },
+      {
+        title: "Tap the end of a staff to mark time",
+        description: "At the matching moment in the video, tap the right edge of the score line. Tap the checkpoint again to remove it.",
+      },
+      {
+        title: "Save as JSON and continue later",
+        description: "Save a JSON file in Settings. Open the same video and PDF later, then load the JSON to continue.",
+      },
+    ],
+    rightsTitle: "Please check before using",
+    rightsNotice:
+      "Use only YouTube videos and score PDFs that you own or are authorized to use. You are responsible for confirming copyright and usage rights. To the extent permitted by applicable law, the service operator is not liable for disputes or damages caused by unauthorized use.",
+    privacyNotice: "Your PDF and practice data are processed in this browser and are not uploaded to our server.",
+    pdfButton: "Choose score PDF",
+  },
+  ja: {
+    language: "日本語",
+    title: "動画と楽譜を同期して練習しましょう",
+    subtitle: "3つのステップで自分だけの楽譜タイミングを作成できます。",
+    steps: [
+      {
+        title: "YouTube動画と楽譜を準備",
+        description: "上でYouTube動画を読み込み、下のボタンから練習に使う楽譜PDFを選択してください。",
+      },
+      {
+        title: "譜表の右端を押してタイミングを記録",
+        description: "動画の該当タイミングで楽譜の行の右端を押します。チェックポイントをもう一度押すと削除できます。",
+      },
+      {
+        title: "JSONで保存して続きから練習",
+        description: "設定からJSONを保存してください。次回、同じ動画とPDFを開いてJSONを読み込むと続きから使えます。",
+      },
+    ],
+    rightsTitle: "ご利用前に必ずご確認ください",
+    rightsNotice:
+      "ご自身が所有している、または利用許可を得ているYouTube動画と楽譜PDFのみをご使用ください。著作権および利用権限の確認は利用者の責任です。無断利用により生じた紛争や損害について、サービス運営者は適用法令で認められる範囲において責任を負いません。",
+    privacyNotice: "PDFと練習データはサーバーへ送信されず、このブラウザ内で処理されます。",
+    pdfButton: "楽譜PDFを選択",
+  },
+};
+
 function prefersReducedMotion(): boolean {
   return typeof window !== "undefined" && window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
 }
 
 export function ScoreViewer() {
+  const [helpLanguage, setHelpLanguage] = useState<HelpLanguage>("ko");
   const pdfBuffer = useAppStore((s) => s.pdfBuffer);
   const zoom = useAppStore((s) => s.settings.zoom);
   const anchors = useAppStore((s) => s.anchors);
@@ -289,12 +379,49 @@ export function ScoreViewer() {
   }
 
   if (!pdfBuffer) {
+    const help = HELP_CONTENT[helpLanguage];
     return (
       <div className="score-viewer score-empty">
         <div className="score-empty-content">
-          <strong>연습할 악보를 불러오세요</strong>
-          <span>PDF 파일은 브라우저 안에서만 처리됩니다.</span>
-          <PdfPicker className="score-pdf-pick" label="악보 PDF 선택" />
+          <div className="help-language-tabs" role="tablist" aria-label="안내 언어 선택">
+            {(Object.keys(HELP_CONTENT) as HelpLanguage[]).map((language) => (
+              <button
+                key={language}
+                type="button"
+                role="tab"
+                aria-selected={helpLanguage === language}
+                className={helpLanguage === language ? "active" : ""}
+                onClick={() => setHelpLanguage(language)}
+              >
+                {HELP_CONTENT[language].language}
+              </button>
+            ))}
+          </div>
+
+          <header className="score-help-header">
+            <strong>{help.title}</strong>
+            <span>{help.subtitle}</span>
+          </header>
+
+          <ol className="score-help-steps">
+            {help.steps.map((step, index) => (
+              <li key={step.title}>
+                <span className="step-number" aria-hidden="true">{index + 1}</span>
+                <div>
+                  <strong>{step.title}</strong>
+                  <p>{step.description}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+
+          <aside className="rights-notice">
+            <strong>{help.rightsTitle}</strong>
+            <p>{help.rightsNotice}</p>
+            <p className="privacy-notice">🔒 {help.privacyNotice}</p>
+          </aside>
+
+          <PdfPicker className="score-pdf-pick" label={help.pdfButton} />
         </div>
       </div>
     );
