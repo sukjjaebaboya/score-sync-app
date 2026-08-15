@@ -1,0 +1,113 @@
+.score-viewer {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  background: #2b2b2b;
+}
+
+.score-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+}
+
+.score-error {
+  color: #ff8787;
+  padding: 24px;
+  text-align: center;
+}
+
+.score-loading {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.6);
+  color: #eee;
+  font-size: 12px;
+  z-index: 2;
+}
+
+.score-scroll {
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  touch-action: pan-y pinch-zoom;
+  background: #444;
+}
+
+.score-doc {
+  position: relative;
+  background: #444;
+}
+
+.score-page-wrap {
+  background: #fff;
+  box-shadow: 0 0 0 1px #ccc;
+}
+
+.pdf-page-placeholder {
+  background: repeating-linear-gradient(45deg, #eee, #eee 10px, #f6f6f6 10px, #f6f6f6 20px);
+}
+
+.pdf-page-canvas-wrap {
+  position: relative;
+}
+
+.pdf-page-error {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.9);
+  color: #c0392b;
+  font-size: 13px;
+}
+
+.anchor-marker {
+  position: absolute;
+  right: -28px;
+  width: 24px;
+  height: 24px;
+  margin-top: -12px;
+  padding: 0;
+  border: 1px solid rgba(174, 38, 38, 0.75);
+  border-radius: 7px;
+  background: rgba(255, 248, 248, 0.94);
+  color: #b32626;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.16);
+  font: 700 16px/22px system-ui, sans-serif;
+  text-align: center;
+  cursor: pointer;
+  z-index: 1;
+  touch-action: manipulation;
+}
+
+.anchor-marker:hover {
+  background: #ffe9e9;
+  border-color: #a61f1f;
+}
+
+.anchor-marker:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
+
+.follow-state-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.5);
+  pointer-events: none;
+}
+
+.follow-following { background: rgba(40, 140, 80, 0.7); }
+.follow-peeking { background: rgba(200, 140, 30, 0.75); }
+.follow-returning { background: rgba(60, 110, 220, 0.75); }

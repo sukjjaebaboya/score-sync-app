@@ -1,0 +1,133 @@
+.toolbar {
+  background: #1c1c1c;
+  color: #eee;
+  padding: 6px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.toolbar-collapsed {
+  padding-block: 4px;
+}
+
+.toolbar-toggle-button {
+  align-self: center;
+  min-width: 112px;
+  min-height: 32px;
+  padding: 0 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid #454545;
+  border-radius: 8px;
+  background: #2a2a2a;
+  color: #ddd;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.toolbar-toggle-button:hover {
+  background: #363636;
+  color: #fff;
+}
+
+.toolbar-toggle-button:focus-visible {
+  outline: 2px solid #4a9eff;
+  outline-offset: 2px;
+}
+
+.toolbar-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.toolbar-row button,
+.pdf-pick span {
+  min-height: 44px;
+  padding: 0 14px;
+  border-radius: 8px;
+  border: none;
+  background: #333;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.pdf-pick {
+  display: inline-flex;
+  cursor: pointer;
+}
+.pdf-pick input {
+  display: none;
+}
+
+.pdf-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #9cf;
+  font-size: 13px;
+}
+
+.change-pdf-btn {
+  min-height: 32px !important;
+  padding: 0 10px !important;
+  font-size: 12px !important;
+}
+
+.save-status {
+  margin-left: auto;
+  font-size: 12px;
+  color: #9c9;
+}
+
+.save-status-saving {
+  color: #ccc;
+}
+
+.save-status-error {
+  color: #ff8787;
+}
+
+.sync-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  margin-left: 8px;
+}
+
+.visibility-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 8px;
+  min-height: 44px;
+  border-radius: 8px;
+  background: #272727;
+  font-size: 13px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.visibility-controls input {
+  width: 17px;
+  height: 17px;
+  accent-color: #4a9eff;
+}
+
+.zoom-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+}
+
+.zoom-controls button {
+  min-width: 40px;
+}

@@ -1,0 +1,200 @@
+.video-panel {
+  position: relative;
+  width: 100%;
+  background: #000;
+  height: clamp(160px, 28vh, 240px);
+  flex-shrink: 0;
+}
+
+/* Portrait tablet: keep the score area dominant, per UX review P2-06. */
+@media (orientation: portrait) {
+  .video-panel {
+    height: clamp(150px, 20vh, 210px);
+  }
+}
+
+.video-pick {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  height: 100%;
+  color: #ccc;
+  font-size: 14px;
+}
+
+.video-pick-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.video-pick-row input[type="text"] {
+  min-height: 40px;
+  width: 320px;
+  max-width: 60vw;
+  padding: 0 10px;
+  border-radius: 8px;
+  border: 1px solid #444;
+  background: #222;
+  color: #eee;
+}
+
+.video-pick-row button {
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: 8px;
+  border: none;
+  background: #4a9eff;
+  color: #fff;
+  cursor: pointer;
+}
+
+.local-file-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.video-error-text {
+  color: #ff6b6b;
+  font-size: 12px;
+}
+
+.video-error-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.7);
+  color: #ff8787;
+  font-size: 14px;
+  z-index: 2;
+}
+
+.video-shell {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.yt-wrap {
+  width: 100%;
+  height: 100%;
+}
+
+.video-el {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #000;
+  border: none;
+  filter: blur(22px) saturate(0.9);
+  transform: scale(1.06);
+}
+
+.mosaic-blur {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  backdrop-filter: blur(4px);
+}
+
+.mosaic-pattern {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.55;
+  background-image: repeating-conic-gradient(
+      #3a3a3a 0% 25%,
+      #545454 0% 50%
+    );
+  background-size: 22px 22px;
+  mix-blend-mode: overlay;
+}
+
+.video-controls {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.75), transparent);
+}
+
+.video-controls button {
+  min-width: 42px;
+  min-height: 42px;
+  border-radius: 8px;
+  border: none;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.video-controls .play-btn {
+  background: #4a9eff;
+  font-weight: 600;
+  padding: 0 16px;
+}
+
+.time-readout {
+  color: #eee;
+  font-variant-numeric: tabular-nums;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.video-seek-slider {
+  flex: 1 1 220px;
+  min-width: 100px;
+  height: 32px;
+  accent-color: #4a9eff;
+  cursor: pointer;
+  touch-action: pan-x;
+}
+
+.video-seek-slider:disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+
+.file-name {
+  color: #aaa;
+  font-size: 12px;
+  max-width: 30%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.change-btn {
+  font-size: 12px !important;
+  padding: 0 10px !important;
+  min-width: unset !important;
+}
+
+@media (max-width: 700px) {
+  .file-name {
+    display: none;
+  }
+
+  .video-controls {
+    gap: 5px;
+    padding-inline: 7px;
+  }
+
+  .video-controls .play-btn {
+    padding-inline: 10px;
+  }
+}
