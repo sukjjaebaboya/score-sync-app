@@ -10,9 +10,11 @@ export function VideoPanel() {
   const ytContainerRef = useRef<HTMLDivElement>(null);
   const ytPlayerRef = useRef<YT.Player | null>(null);
   const pollRef = useRef<number | null>(null);
+  const volumeRef = useRef(100);
 
   const [ytInput, setYtInput] = useState("https://youtu.be/Sm4JaV6Xz0M");
   const [ytLoadError, setYtLoadError] = useState<string | null>(null);
+  const [volume, setVolume] = useState(100);
 
   const media = useAppStore((s) => s.media);
   const videoBlobUrl = useAppStore((s) => s.videoBlobUrl);
@@ -98,6 +100,7 @@ export function VideoPanel() {
           events: {
             onReady: (e) => {
               setDuration(e.target.getDuration());
+              e.target.setVolume(volumeRef.current);
               const iframe = e.target.getIframe();
               iframe.classList.add("video-el", "youtube");
               iframe.style.width = "100%";
@@ -223,6 +226,14 @@ export function VideoPanel() {
     }
   }
 
+  function changeVolume(nextVolume: number) {
+    const next = Math.min(100, Math.max(0, nextVolume));
+    volumeRef.current = next;
+    setVolume(next);
+    if (source === "youtube") ytPlayerRef.current?.setVolume(next);
+    if (source === "local" && videoRef.current) videoRef.current.volume = next / 100;
+  }
+
   function seekTo(timeSec: number) {
     const next = Math.min(Math.max(0, timeSec), duration || timeSec);
     if (source === "local" && videoRef.current) {
@@ -275,6 +286,16 @@ export function VideoPanel() {
             <div className="video-error-overlay">{playbackError ?? "재생 오류가 발생했습니다."}</div>
           )}
 
+
+          <div className="video-ad-slots" aria-label="광고 배치 영역">
+            <aside className="video-ad-slot" data-ad-position="above-play-controls" aria-label="재생 버튼 위 광고 영역">
+              <span>광고 영역</span>
+            </aside>
+            <aside className="video-ad-slot" data-ad-position="above-change-video" aria-label="영상 변경 버튼 위 광고 영역">
+              <span>광고 영역</span>
+            </aside>
+          </div>
+
           <div className="video-controls">
             {showPracticeControls && (
               <>
@@ -302,6 +323,20 @@ export function VideoPanel() {
                 <span className="time-readout">
                   {formatTime(currentTime)} / {formatTime(duration)}
                 </span>
+                <label className="volume-control">
+                  <span>음량</span>
+                  <input
+                    type="range"
+                    min="0"
+                    max="100"
+                    step="1"
+                    value={volume}
+                    onInput={(event) => changeVolume(Number(event.currentTarget.value))}
+                    aria-label="영상 음량"
+                    aria-valuetext={`${volume}%`}
+                  />
+                  <output>{volume}%</output>
+                </label>
               </>
             )}
             <span className="file-name">

@@ -1,13 +1,10 @@
 import { useRef, useState } from "react";
 import { useAppStore } from "../store/useAppStore";
 import { getVideoController } from "../lib/videoController";
-import { downloadJson, readJsonFile, sha256OfFile, ProjectValidationError } from "../lib/db";
-import { loadPdfDocument, PdfPasswordCancelledError } from "../lib/pdf";
+import { downloadJson, readJsonFile, ProjectValidationError } from "../lib/db";
 import type { MediaSource, ProjectFile } from "../types";
+import { PdfPicker } from "./PdfPicker";
 import "./Toolbar.css";
-
-const MAX_PDF_MB = 150;
-const PAGE_COUNT_WARN_THRESHOLD = 200;
 
 function mediaLabel(media: MediaSource | null): string {
   if (!media) return "(영상 없음)";
@@ -39,7 +36,6 @@ export function Toolbar() {
   const pdfFileName = useAppStore((s) => s.pdfFileName);
   const pdfSha256 = useAppStore((s) => s.pdfSha256);
   const pageCount = useAppStore((s) => s.pageCount);
-  const setPdf = useAppStore((s) => s.setPdf);
   const clearPdf = useAppStore((s) => s.clearPdf);
   const saveStatus = useAppStore((s) => s.saveStatus);
 
@@ -107,45 +103,6 @@ export function Toolbar() {
     );
   }
 
-  async function handlePickPdf(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    if (pdfFileName && !confirmDiscardAnchors()) {
-      e.target.value = "";
-      return;
-    }
-    if (!file.name.toLowerCase().endsWith(".pdf") && file.type !== "application/pdf") {
-      alert("PDF 파일이 아닙니다.");
-      e.target.value = "";
-      return;
-    }
-    if (file.size > MAX_PDF_MB * 1024 * 1024) {
-      alert(`파일이 너무 큽니다 (${(file.size / 1024 / 1024).toFixed(0)}MB). ${MAX_PDF_MB}MB 이하만 지원합니다.`);
-      e.target.value = "";
-      return;
-    }
-    try {
-      const buffer = await file.arrayBuffer();
-      const hash = await sha256OfFile(file);
-      const doc = await loadPdfDocument(buffer);
-      if (
-        doc.numPages > PAGE_COUNT_WARN_THRESHOLD &&
-        !window.confirm(`이 PDF는 ${doc.numPages}페이지입니다. 페이지가 많으면 태블릿에서 느려질 수 있습니다. 계속하시겠습니까?`)
-      ) {
-        e.target.value = "";
-        return;
-      }
-      setPdf(file.name, hash, buffer, doc.numPages);
-    } catch (err) {
-      if (err instanceof PdfPasswordCancelledError) {
-        // user cancelled the password prompt; nothing to report
-      } else {
-        alert(`PDF를 불러오지 못했습니다: ${(err as Error).message}`);
-      }
-    }
-    e.target.value = "";
-  }
-
   function changePdf() {
     if (!confirmDiscardAnchors()) return;
     clearPdf();
@@ -173,10 +130,7 @@ export function Toolbar() {
 
       {expanded && <div className="toolbar-row" id="settings-toolbar-content">
         {!pdfFileName && (
-          <label className="pdf-pick">
-            <span>PDF 선택</span>
-            <input type="file" accept="application/pdf" onChange={handlePickPdf} />
-          </label>
+          <PdfPicker />
         )}
         {pdfFileName && (
           <span className="pdf-name">

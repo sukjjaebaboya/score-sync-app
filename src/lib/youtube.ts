@@ -86,6 +86,7 @@ declare global {
       constructor(el: HTMLElement | string, options: PlayerOptions);
       playVideo(): void;
       pauseVideo(): void;
+      setVolume(volume: number): void;
       seekTo(seconds: number, allowSeekAhead: boolean): void;
       getCurrentTime(): number;
       getDuration(): number;

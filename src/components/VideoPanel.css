@@ -131,6 +131,33 @@
   background: linear-gradient(to top, rgba(0, 0, 0, 0.75), transparent);
 }
 
+.video-ad-slots {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 58px;
+  display: grid;
+  grid-template-columns: minmax(180px, 320px) minmax(180px, 320px);
+  justify-content: space-between;
+  gap: 16px;
+  pointer-events: none;
+}
+
+.video-ad-slot {
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 1px dashed rgba(255, 255, 255, 0.35);
+  border-radius: 8px;
+  background: rgba(15, 15, 15, 0.72);
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  pointer-events: auto;
+}
+
 .video-controls button {
   min-width: 42px;
   min-height: 42px;
@@ -169,6 +196,29 @@
   opacity: 0.45;
 }
 
+.volume-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #eee;
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.volume-control input {
+  width: clamp(72px, 10vw, 120px);
+  height: 30px;
+  accent-color: #4a9eff;
+  cursor: pointer;
+  touch-action: pan-x;
+}
+
+.volume-control output {
+  min-width: 32px;
+  color: #bbb;
+  font-variant-numeric: tabular-nums;
+}
+
 .file-name {
   color: #aaa;
   font-size: 12px;
@@ -196,5 +246,25 @@
 
   .video-controls .play-btn {
     padding-inline: 10px;
+  }
+
+  .video-ad-slots {
+    left: 7px;
+    right: 7px;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .video-ad-slot {
+    min-height: 50px;
+  }
+
+  .volume-control span,
+  .volume-control output {
+    display: none;
+  }
+
+  .volume-control input {
+    width: 72px;
   }
 }

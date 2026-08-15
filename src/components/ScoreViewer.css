@@ -12,6 +12,55 @@
   color: #999;
 }
 
+.score-empty-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 28px;
+  text-align: center;
+}
+
+.score-empty-content strong {
+  color: #f2f2f2;
+  font-size: clamp(18px, 2.6vw, 26px);
+}
+
+.score-empty-content > span {
+  color: #b8b8b8;
+  font-size: 13px;
+}
+
+.score-pdf-pick {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 190px;
+  min-height: 52px;
+  margin-top: 6px;
+  padding: 0 22px;
+  border: 1px solid #76b8ff;
+  border-radius: 12px;
+  background: #1976d2;
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.24);
+}
+
+.score-pdf-pick:hover {
+  background: #2387e7;
+}
+
+.score-pdf-pick:focus-within {
+  outline: 3px solid rgba(118, 184, 255, 0.55);
+  outline-offset: 3px;
+}
+
+.score-pdf-pick input {
+  display: none;
+}
+
 .score-error {
   color: #ff8787;
   padding: 24px;

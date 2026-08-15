@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { useAppStore } from "../store/useAppStore";
 import { loadPdfDocument, type PDFPageProxy } from "../lib/pdf";
 import { PdfPage } from "./PdfPage";
+import { PdfPicker } from "./PdfPicker";
 import { computeAutoScrollTarget, type PageLayout } from "../lib/geometry";
 import "./ScoreViewer.css";
 
@@ -288,7 +289,15 @@ export function ScoreViewer() {
   }
 
   if (!pdfBuffer) {
-    return <div className="score-viewer score-empty">PDF를 선택하세요.</div>;
+    return (
+      <div className="score-viewer score-empty">
+        <div className="score-empty-content">
+          <strong>연습할 악보를 불러오세요</strong>
+          <span>PDF 파일은 브라우저 안에서만 처리됩니다.</span>
+          <PdfPicker className="score-pdf-pick" label="악보 PDF 선택" />
+        </div>
+      </div>
+    );
   }
 
   if (pdfError) {
