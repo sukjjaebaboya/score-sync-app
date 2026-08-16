@@ -12,7 +12,7 @@ export function VideoPanel() {
   const pollRef = useRef<number | null>(null);
   const volumeRef = useRef(100);
 
-  const [ytInput, setYtInput] = useState("https://youtu.be/Sm4JaV6Xz0M");
+  const [ytInput, setYtInput] = useState("");
   const [ytLoadError, setYtLoadError] = useState<string | null>(null);
   const [volume, setVolume] = useState(100);
 
