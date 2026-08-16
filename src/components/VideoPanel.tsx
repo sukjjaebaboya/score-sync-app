@@ -281,6 +281,13 @@ export function VideoPanel() {
           {/* Always-on mosaic mask: blur stage + opaque pattern stage. Not user-toggleable. */}
           <div className="mosaic-blur" />
           <div className="mosaic-pattern" />
+          <button
+            type="button"
+            className="video-surface-toggle"
+            onClick={togglePlay}
+            aria-label={isPlaying ? "영상 일시정지" : "영상 재생"}
+            title={isPlaying ? "눌러서 일시정지" : "눌러서 재생"}
+          />
 
           {playbackState === "error" && (
             <div className="video-error-overlay">{playbackError ?? "재생 오류가 발생했습니다."}</div>
