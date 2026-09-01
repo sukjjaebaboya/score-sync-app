@@ -246,7 +246,7 @@ export function VideoPanel() {
   }
 
   return (
-    <div className="video-panel">
+    <div className={`video-panel ${source !== "none" ? "video-panel-compact" : ""}`}>
       {source === "none" && (
         <div className="video-pick">
           <div className="video-pick-row">
@@ -278,30 +278,9 @@ export function VideoPanel() {
               <div ref={ytContainerRef} className="video-el youtube" />
             </div>
           )}
-          {/* Always-on mosaic mask: blur stage + opaque pattern stage. Not user-toggleable. */}
-          <div className="mosaic-blur" />
-          <div className="mosaic-pattern" />
-          <button
-            type="button"
-            className="video-surface-toggle"
-            onClick={togglePlay}
-            aria-label={isPlaying ? "영상 일시정지" : "영상 재생"}
-            title={isPlaying ? "눌러서 일시정지" : "눌러서 재생"}
-          />
-
           {playbackState === "error" && (
             <div className="video-error-overlay">{playbackError ?? "재생 오류가 발생했습니다."}</div>
           )}
-
-
-          <div className="video-ad-slots" aria-label="광고 배치 영역">
-            <aside className="video-ad-slot" data-ad-position="above-play-controls" aria-label="재생 버튼 위 광고 영역">
-              <span>광고 영역</span>
-            </aside>
-            <aside className="video-ad-slot" data-ad-position="above-change-video" aria-label="영상 변경 버튼 위 광고 영역">
-              <span>광고 영역</span>
-            </aside>
-          </div>
 
           <div className="video-controls">
             {showPracticeControls && (

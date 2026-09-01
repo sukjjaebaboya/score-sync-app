@@ -84,6 +84,27 @@
   overflow: hidden;
 }
 
+.video-panel-compact {
+  height: auto;
+  min-height: 58px;
+  background: #151515;
+}
+
+.video-panel-compact .video-shell {
+  height: auto;
+  min-height: 58px;
+}
+
+.video-panel-compact .yt-wrap,
+.video-panel-compact .video-el {
+  position: absolute;
+  width: 1px !important;
+  height: 1px !important;
+  opacity: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
 .yt-wrap {
   width: 100%;
   height: 100%;
@@ -99,85 +120,14 @@
   transform: scale(1.06);
 }
 
-.mosaic-blur {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  backdrop-filter: blur(4px);
-}
-
-.mosaic-pattern {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0.55;
-  background-image: repeating-conic-gradient(
-      #3a3a3a 0% 25%,
-      #545454 0% 50%
-    );
-  background-size: 22px 22px;
-  mix-blend-mode: overlay;
-}
-
-/* Capture taps on the obscured player so YouTube title/channel links cannot
-   open. Visible controls and future ad units sit above this layer. */
-.video-surface-toggle {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  width: 100%;
-  height: 100%;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  cursor: pointer;
-  touch-action: manipulation;
-}
-
-.video-surface-toggle:focus-visible {
-  outline: 3px solid #4a9eff;
-  outline-offset: -4px;
-}
-
 .video-controls {
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  position: relative;
   display: flex;
   align-items: center;
   gap: 8px;
   padding: 8px 12px;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.75), transparent);
-  z-index: 3;
-}
-
-.video-ad-slots {
-  position: absolute;
-  left: 12px;
-  right: 12px;
-  bottom: 58px;
-  display: grid;
-  grid-template-columns: minmax(180px, 320px) minmax(180px, 320px);
-  justify-content: space-between;
-  gap: 16px;
-  pointer-events: none;
-  z-index: 2;
-}
-
-.video-ad-slot {
-  min-height: 64px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  border: 1px dashed rgba(255, 255, 255, 0.35);
-  border-radius: 8px;
-  background: rgba(15, 15, 15, 0.72);
-  color: rgba(255, 255, 255, 0.58);
-  font-size: 11px;
-  letter-spacing: 0.08em;
-  pointer-events: auto;
+  background: #151515;
+  z-index: 1;
 }
 
 .video-controls button {
@@ -268,17 +218,6 @@
 
   .video-controls .play-btn {
     padding-inline: 10px;
-  }
-
-  .video-ad-slots {
-    left: 7px;
-    right: 7px;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-  }
-
-  .video-ad-slot {
-    min-height: 50px;
   }
 
   .volume-control span,
