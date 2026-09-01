@@ -3,7 +3,12 @@ import { useAppStore } from "../store/useAppStore";
 import { loadPdfDocument, type PDFPageProxy } from "../lib/pdf";
 import { PdfPage } from "./PdfPage";
 import { PdfPicker } from "./PdfPicker";
-import { computeAutoScrollTarget, type PageLayout } from "../lib/geometry";
+import {
+  computeAutoScrollTarget,
+  documentYAtTime,
+  targetScrollTop,
+  type PageLayout,
+} from "../lib/geometry";
 import "./ScoreViewer.css";
 
 const RENDER_BUFFER_PAGES = 1;
@@ -133,12 +138,7 @@ export function ScoreViewer() {
   const rafId = useRef<number | null>(null);
   const layoutsRef = useRef<PageLayout[]>([]);
   const returnAnimRef = useRef<{ start: number; from: number; to: number } | null>(null);
-  const followAnimRef = useRef<{
-    start: number;
-    from: number;
-    to: number;
-    duration: number;
-  } | null>(null);
+  const followFrameTimeRef = useRef<number | null>(null);
 
   // Load PDF document; render page 1 first for a fast first paint, then fetch
   // the remaining page proxies progressively in the background.
@@ -248,46 +248,35 @@ export function ScoreViewer() {
 
         if (state.followState === "FOLLOWING") {
           returnAnimRef.current = null;
-          const { target, shouldMove } = computeAutoScrollTarget(
-            state.currentTime,
-            state.anchors,
-            layouts,
-            viewportHeight,
-            state.settings,
-            el.scrollTop
-          );
+          const documentY = documentYAtTime(state.currentTime, state.anchors, layouts);
 
-          if (prefersReducedMotion()) {
-            followAnimRef.current = null;
-            if (shouldMove) applyScrollTop(target);
+          if (documentY === null) {
+            followFrameTimeRef.current = null;
           } else {
-            let animation = followAnimRef.current;
+            const target = targetScrollTop(documentY, viewportHeight, state.settings.focusRatio);
+            const focusOffset = viewportHeight * state.settings.focusRatio;
+            const fromPage = pageIndexAtY(el.scrollTop + focusOffset, layouts);
+            const toPage = pageIndexAtY(target + focusOffset, layouts);
+            const duration = prefersReducedMotion()
+              ? 140
+              : fromPage === toPage
+                ? SAME_PAGE_SCROLL_MS
+                : PAGE_TURN_SCROLL_MS;
+            const previousFrame = followFrameTimeRef.current ?? now - 16;
+            const elapsed = Math.min(50, Math.max(1, now - previousFrame));
+            followFrameTimeRef.current = now;
+            const remaining = target - el.scrollTop;
 
-            if (!animation && shouldMove) {
-              const focusOffset = viewportHeight * state.settings.focusRatio;
-              const fromPage = pageIndexAtY(el.scrollTop + focusOffset, layouts);
-              const toPage = pageIndexAtY(target + focusOffset, layouts);
-              animation = {
-                start: now,
-                from: el.scrollTop,
-                to: target,
-                duration: fromPage === toPage ? SAME_PAGE_SCROLL_MS : PAGE_TURN_SCROLL_MS,
-              };
-              followAnimRef.current = animation;
-            }
-
-            if (animation) {
-              // Keep one continuous animation even while the playhead advances.
-              // This prevents page turns from looking like several small clicks.
-              if (shouldMove) animation.to = target;
-              const progress = Math.min(1, (now - animation.start) / animation.duration);
-              const eased = 1 - Math.pow(1 - progress, 3);
-              applyScrollTop(animation.from + (animation.to - animation.from) * eased);
-              if (progress >= 1) followAnimRef.current = null;
+            if (Math.abs(remaining) > 0.1) {
+              // Exponential smoothing follows the continuously interpolated
+              // playhead target without restarting a series of short scrolls.
+              // 4.6 time constants reaches about 99% of the target duration.
+              const blend = 1 - Math.exp((-4.6 * elapsed) / Math.max(1, duration));
+              applyScrollTop(el.scrollTop + remaining * blend);
             }
           }
         } else if (state.followState === "RETURNING") {
-          followAnimRef.current = null;
+          followFrameTimeRef.current = null;
           const { target } = computeAutoScrollTarget(
             state.currentTime,
             state.anchors,
@@ -320,7 +309,7 @@ export function ScoreViewer() {
             }
           }
         } else {
-          followAnimRef.current = null;
+          followFrameTimeRef.current = null;
           returnAnimRef.current = null;
         }
       }
